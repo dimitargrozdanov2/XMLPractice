@@ -14,18 +14,16 @@ namespace XMLPractice
     {
         static void Main(string[] args)
         {
-            //var currDir = Directory.GetCurrentDirectory();
-            //var inputXMLsDirectory = Path.GetFullPath(Path.Combine(currDir, @"..\..\..\", "XMLDocstosign"));
-            //bool success = LoadXmlFiles(inputXMLsDirectory);
-
-            //    if (success)
-            //{
-            //    ZipFiles(inputXMLsDirectory);
-            //}
-            string methodName = "uploadFile";
-            string xml = "test";
-            var result = MakeWebServiceCall(methodName, xml);
-
+            var currDir = Directory.GetCurrentDirectory();
+            var inputXMLsDirectory = Path.GetFullPath(Path.Combine(currDir, @"..\..\..\", "XMLDocstosign"));
+            bool success = LoadXmlFiles(inputXMLsDirectory);
+            string outputPath;
+            if (success)
+            {
+                outputPath = ZipFiles(inputXMLsDirectory);
+                string methodName = "uploadFile";
+                var result = MakeWebServiceCall(methodName, outputPath);
+            }
 
         }
 
@@ -45,21 +43,24 @@ namespace XMLPractice
 
             //Create Stream and Complete Request
             StreamWriter streamWriter = new StreamWriter(requestStream);
-            streamWriter.Write(String.Format(GetSoapString(), requestXmlString));
+            streamWriter.Write(GetSoapString());
             streamWriter.Close();
 
-            //Get the Response
+            //Get response
             WebResponse webResponse = httpRequest.GetResponse();
             Stream responseStream = webResponse.GetResponseStream();
             StreamReader streamReader = new StreamReader(responseStream);
+            string resulXmlFromWebService = streamReader.ReadToEnd();
+            Console.WriteLine(resulXmlFromWebService);
+            return resulXmlFromWebService;
 
-            //Read the response into an xml document
-            System.Xml.XmlDocument soapResonseXMLDocument = new System.Xml.XmlDocument();
+            ////Read the response into an xml document - that breaks if the document does not work
+            //System.Xml.XmlDocument soapResonseXMLDocument = new System.Xml.XmlDocument();
 
-            soapResonseXMLDocument.LoadXml(streamReader.ReadToEnd());
+            //soapResonseXMLDocument.LoadXml(streamReader.ReadToEnd());
 
-            //return only the xml representing the response details (inner request)
-            return soapResonseXMLDocument.GetElementsByTagName(methodName + "Result")[0].InnerXml;
+            ////return only the xml representing the response details (inner request)
+            //return soapResonseXMLDocument.GetElementsByTagName(methodName + "Result")[0].InnerXml;
         }
 
 
@@ -78,13 +79,14 @@ namespace XMLPractice
             soapRequest.Append(@"<fileCont href=""cid: e2315277bec2dfea98e1ca49f8d310b1""/></ns4:uploadFile>");
             soapRequest.Append(@"</SOAP-ENV:Body>");
             soapRequest.Append(@"</SOAP-ENV:Envelope>");
+            Console.WriteLine(soapRequest);
             return soapRequest.ToString();
         }
 
         //Generate xml based on the C# object from the database
         public static bool LoadXmlFiles(string targetDirectory)
         {
-            bool success;
+            bool success = true;
             // Process the list of files found in the directory.
             //We assume files are of type.xml in the folder
             try
@@ -129,7 +131,7 @@ namespace XMLPractice
                 success = false;
             }
 
-            return success = true;
+            return success;
         }
 
         public static void SignXmlDocumentWithCertificate(XmlDocument xmlDoc, X509Certificate2 cert)
@@ -204,7 +206,7 @@ namespace XMLPractice
             return cert;
         }
 
-        public static void ZipFiles(string inputXMLsDirectory)
+        public static string ZipFiles(string inputXMLsDirectory)
         {
             string extractPath = inputXMLsDirectory + @"\..\results.zip";
             var signedDocsFolder = inputXMLsDirectory + @".\SignedDocs";
@@ -221,9 +223,12 @@ namespace XMLPractice
                 {
                     Console.WriteLine("Zip file has already been created. Please delete file if you want to make a new one.");
                 }
+                return extractPath;
             }
-
-            
+            else
+            {
+                return signedDocsFolder;
+            }         
         }
     }
 }
