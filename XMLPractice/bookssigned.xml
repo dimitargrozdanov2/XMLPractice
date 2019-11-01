@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<books>
+  <book price="10">
+    <author>Don Box</author>
+    <title>ASP.NET</title>
+  </book>
+  <book>
+    <author>Svetlin Nakov and his team</author>
+    <title>Introduction to Programming</title>
+  </book>
+<Signature xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo><CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315" /><SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256" /><Reference URI=""><Transforms><Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature" /></Transforms><DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256" /><DigestValue>DP8ymlBaMUJoj2jw4qrl9k9/ugOcmk8o/FbJE8/E4Y8=</DigestValue></Reference></SignedInfo><SignatureValue>n/fthM6bIkPOz2aKq9gQph8w4h4dKQArmOKUqPjKWzhz5z6K7hYIYYMKgz/Ii8wVkCxqF+jmv8Brl+YrpvgRa4q/L7lemGdOb3jPDQLmk9ytL1Jpo2ntwbEAmuPj0ATLqNXgVtjAK+m72/E5CrDnk1z5T7IWxJwF/PKmiNoCigI=</SignatureValue></Signature></books>

@@ -1,0 +1,108 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Invoice xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+	<InvoiceHeader>
+		<InvoiceNumber>9800000000</InvoiceNumber>
+		<InvoiceDate>2012-11-22</InvoiceDate>
+		<InvoiceTypeCode>INV</InvoiceTypeCode>
+		<InvoiceTypeText>Фактура</InvoiceTypeText>
+		<InvoiceOriginCode>ORIG</InvoiceOriginCode>
+		<InvoiceOriginText>Оригинал</InvoiceOriginText>
+		<TaxPointDate>2012-11-22</TaxPointDate>
+		<InvoiceCreatedBy>Иван Иванов</InvoiceCreatedBy>
+	</InvoiceHeader>
+	<Delivery>
+		<Date>2012-11-25</Date>
+		<Address>
+			<Name>Петър Петров</Name>
+		</Address>
+	</Delivery>
+	<Biller>
+		<VATIdentificationNumber>BG201230426</VATIdentificationNumber>
+		<IdentificationNumber>201230426</IdentificationNumber>
+		<Address>
+			<Name>БОРИКА-БАНКСЕРВИЗ АД</Name>
+			<Street>бул. Цариградско шосе № 117</Street>
+			<Town>София</Town>
+			<Country>България</Country>
+			<Phone>+359 2 9215 100</Phone>
+		</Address>
+	</Biller>
+	<Recipient>
+		<VATIdentificationNumber>BG000000000</VATIdentificationNumber>
+		<IdentificationNumber>000000000</IdentificationNumber>
+		<BillersRecipientID>123456</BillersRecipientID>
+		<Address>
+			<Name>Фирма ЕООД</Name>
+			<Street>бул. Цар Борис III № 41</Street>
+			<Town>София</Town>
+			<Email>email@example.com</Email>
+			<Contact>Петър Петров</Contact>
+		</Address>
+	</Recipient>
+	<Details>
+		<ItemList ListType="structured">
+			<ListLineItem>
+				<ListElement Type="IdentifierType" Usage="Number">1</ListElement>
+				<ListElement Type="StringType" Usage="Description">Такса за участие в системата</ListElement>
+				<ListElement Type="StringType" Usage="SerialNumber">1</ListElement>
+				<ListElement Type="StringType" Usage="Unit">бр.</ListElement>
+				<ListElement Type="StringType" Usage="Quantity">1</ListElement>
+				<ListElement Type="StringType" Usage="UnitPrice">150.00</ListElement>
+				<ListElement Type="StringType" Usage="VATPercentage">20.00</ListElement>
+				<ListElement Type="AmountType" Usage="Amount">150.00</ListElement>
+			</ListLineItem>
+			<ListLineItem>
+				<ListElement Type="IdentifierType" Usage="Number">2</ListElement>
+				<ListElement Type="StringType" Usage="Description">Certificate renewal</ListElement>
+				<ListElement Type="StringType" Usage="SerialNumber">1013</ListElement>
+				<ListElement Type="StringType" Usage="Unit">бр.</ListElement>
+				<ListElement Type="StringType" Usage="Quantity">1</ListElement>
+				<ListElement Type="StringType" Usage="UnitPrice">24.00</ListElement>
+				<ListElement Type="StringType" Usage="VATPercentage">0.00</ListElement>
+				<ListElement Type="AmountType" Usage="Amount">24.00</ListElement>
+			</ListLineItem>
+		</ItemList>
+		<TotalVATExcludedAmount Currency="BGN">174.00</TotalVATExcludedAmount>
+	</Details>
+	<Tax>
+		<VAT>
+			<Item>
+				<TaxedAmount>24.00</TaxedAmount>
+				<Percentage>0.00</Percentage>
+				<Amount>0.00</Amount>
+			</Item>
+			<Item>
+				<TaxedAmount>150.00</TaxedAmount>
+				<Percentage>20.00</Percentage>
+				<Amount>30.00</Amount>
+			</Item>
+		</VAT>
+	</Tax>
+	<TotalGrossAmount Currency="BGN">204.00</TotalGrossAmount>
+	<PaymentMethod xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CreditTransferType">
+		<Comment>платежно нареждане</Comment>
+		<BeneficiaryAccount>
+			<BankName>УНИКРЕДИТ БУЛБАНК АД</BankName>
+			<BIC>UNCRBGSF</BIC>
+			<IBAN>BG13UNCR75271059563019</IBAN>
+		</BeneficiaryAccount>
+	</PaymentMethod>
+	<PaymentConditions>
+		<DueDate>2012-12-22</DueDate>
+	</PaymentConditions>
+	<PresentationDetails>
+		<LayoutID>0100</LayoutID>
+		<Language>bul</Language>
+		<TransformationID>1</TransformationID>
+	</PresentationDetails>
+	<Custom>
+		<Description>
+			<ID>InWords</ID>
+			<Value>двеста и четири лв. и 00 ст.</Value>
+		</Description>
+		<Description>
+			<ID>VAT0Reason</ID>
+			<Value>чл. 21</Value>
+		</Description>
+	</Custom>
+<Signature xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo><CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315" /><SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256" /><Reference URI=""><Transforms><Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature" /></Transforms><DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256" /><DigestValue>SuwZR9swROcIX150Wo3fpqJO7GWZUBREIQ6Gxwk74uU=</DigestValue></Reference></SignedInfo><SignatureValue>dAwyxGhxLusMMK09EA5iO00V7phuDxdcJEwGhqju/S/b7gnHpderq0x4TqXJ4QG2EwsdL8z4qUDFHYFFiZdKeG5F4TUCesPxTiGZokoGXQy78ruxID5gdMaVlRmnfD7zw6yO1ZDzpIqc+Y6mHZdGZ+4DNiBvoY8mdz2S/ESCrZXZxcOOC/3QAzagJufE9LagfWIIwY1yR8FikfzOE7HcjgcKB033F+9onquqW9ZvR9ZZxXX7UmCRTwnx1TtjtShLrj9A7KGRy7wIUefMElLPUS++1HfTnJLD2uFyEyrXfcUz1YqD5zmWOkB3AS1/pQO+wqPXk3APN+0AkD9iCz9+GQ==</SignatureValue><KeyInfo><X509Data><X509Certificate>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</X509Certificate></X509Data><KeyValue><RSAKeyValue><Modulus>t++UmV1G9ApuI118GdwK0BoxN3tjrxuQHTwKvlFgl6VrcLhMCb5Q2prga8I4HKLvLDr3L4bsrH0k9r6PPppqMpiN/KGdm6eB2uLnWtJXh1PWcnzfHfodYfQP/NAavIo4wSjss0L41c75/CA0x11iDdU4BOdTHGXaFCaNPQ5DLe3LK+6hjZ+fOYMpCd035TYTLo5+/Ttk5eCzr+MHfnWCaCIOUgkbq0OIUQWch2Sc9regIiA9oPPjUmmbqptLfm9wZBHRZZ+7Q4BewxSBBCIFt5yPhCsTZ1fFINV16tGtXTmtgXCagu4NiH7XsyhZhYDrA8CXb31Dn7M/ussNQkGrEQ==</Modulus><Exponent>AQAB</Exponent></RSAKeyValue></KeyValue></KeyInfo></Signature></Invoice>

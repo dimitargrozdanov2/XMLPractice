@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Invoice xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+	<InvoiceHeader>
+		<InvoiceNumber>9800000000</InvoiceNumber>
+		<InvoiceDate>2012-11-22</InvoiceDate>
+		<InvoiceTypeCode>INV</InvoiceTypeCode>
+		<InvoiceTypeText>Фактура</InvoiceTypeText>
+		<InvoiceOriginCode>ORIG</InvoiceOriginCode>
+		<InvoiceOriginText>Оригинал</InvoiceOriginText>
+		<TaxPointDate>2012-11-22</TaxPointDate>
+		<InvoiceCreatedBy>Иван Иванов</InvoiceCreatedBy>
+	</InvoiceHeader>
+	<Delivery>
+		<Date>2012-11-25</Date>
+		<Address>
+			<Name>Петър Петров</Name>
+		</Address>
+	</Delivery>
+	<Biller>
+		<VATIdentificationNumber>BG201230426</VATIdentificationNumber>
+		<IdentificationNumber>201230426</IdentificationNumber>
+		<Address>
+			<Name>БОРИКА-БАНКСЕРВИЗ АД</Name>
+			<Street>бул. Цариградско шосе № 117</Street>
+			<Town>София</Town>
+			<Country>България</Country>
+			<Phone>+359 2 9215 100</Phone>
+		</Address>
+	</Biller>
+	<Recipient>
+		<VATIdentificationNumber>BG000000000</VATIdentificationNumber>
+		<IdentificationNumber>000000000</IdentificationNumber>
+		<BillersRecipientID>123456</BillersRecipientID>
+		<Address>
+			<Name>Фирма ЕООД</Name>
+			<Street>бул. Цар Борис III № 41</Street>
+			<Town>София</Town>
+			<Email>email@example.com</Email>
+			<Contact>Петър Петров</Contact>
+		</Address>
+	</Recipient>
+	<Details>
+		<ItemList ListType="structured">
+			<ListLineItem>
+				<ListElement Type="IdentifierType" Usage="Number">1</ListElement>
+				<ListElement Type="StringType" Usage="Description">Такса за участие в системата</ListElement>
+				<ListElement Type="StringType" Usage="SerialNumber">1</ListElement>
+				<ListElement Type="StringType" Usage="Unit">бр.</ListElement>
+				<ListElement Type="StringType" Usage="Quantity">1</ListElement>
+				<ListElement Type="StringType" Usage="UnitPrice">150.00</ListElement>
+				<ListElement Type="StringType" Usage="VATPercentage">20.00</ListElement>
+				<ListElement Type="AmountType" Usage="Amount">150.00</ListElement>
+			</ListLineItem>
+			<ListLineItem>
+				<ListElement Type="IdentifierType" Usage="Number">2</ListElement>
+				<ListElement Type="StringType" Usage="Description">Certificate renewal</ListElement>
+				<ListElement Type="StringType" Usage="SerialNumber">1013</ListElement>
+				<ListElement Type="StringType" Usage="Unit">бр.</ListElement>
+				<ListElement Type="StringType" Usage="Quantity">1</ListElement>
+				<ListElement Type="StringType" Usage="UnitPrice">24.00</ListElement>
+				<ListElement Type="StringType" Usage="VATPercentage">0.00</ListElement>
+				<ListElement Type="AmountType" Usage="Amount">24.00</ListElement>
+			</ListLineItem>
+		</ItemList>
+		<TotalVATExcludedAmount Currency="BGN">174.00</TotalVATExcludedAmount>
+	</Details>
+	<Tax>
+		<VAT>
+			<Item>
+				<TaxedAmount>24.00</TaxedAmount>
+				<Percentage>0.00</Percentage>
+				<Amount>0.00</Amount>
+			</Item>
+			<Item>
+				<TaxedAmount>150.00</TaxedAmount>
+				<Percentage>20.00</Percentage>
+				<Amount>30.00</Amount>
+			</Item>
+		</VAT>
+	</Tax>
+	<TotalGrossAmount Currency="BGN">204.00</TotalGrossAmount>
+	<PaymentMethod xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CreditTransferType">
+		<Comment>платежно нареждане</Comment>
+		<BeneficiaryAccount>
+			<BankName>УНИКРЕДИТ БУЛБАНК АД</BankName>
+			<BIC>UNCRBGSF</BIC>
+			<IBAN>BG13UNCR75271059563019</IBAN>
+		</BeneficiaryAccount>
+	</PaymentMethod>
+	<PaymentConditions>
+		<DueDate>2012-12-22</DueDate>
+	</PaymentConditions>
+	<PresentationDetails>
+		<LayoutID>0100</LayoutID>
+		<Language>bul</Language>
+		<TransformationID>1</TransformationID>
+	</PresentationDetails>
+	<Custom>
+		<Description>
+			<ID>InWords</ID>
+			<Value>двеста и четири лв. и 00 ст.</Value>
+		</Description>
+		<Description>
+			<ID>VAT0Reason</ID>
+			<Value>чл. 21</Value>
+		</Description>
+	</Custom>
+</Invoice>
