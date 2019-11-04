@@ -19,10 +19,11 @@ namespace XMLPractice
             bool success = LoadXmlFiles(inputXMLsDirectory);
             string outputPath;
 
-            if (success)
-            {
                 string methodName = "uploadFile";
                 var result = MakeWebServiceCall(methodName, "test");
+
+            if (success)
+            {
                 outputPath = ZipFiles(inputXMLsDirectory);
             }
 
@@ -67,38 +68,15 @@ namespace XMLPractice
 
         private static string GetSoapString(string requestXmlString)
         {
+            //Convert name to base64
             var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(requestXmlString);
             var fileName = System.Convert.ToBase64String(plainTextBytes);
-            string x = @"<note>
-< to > Tove </ to >
-< from > Jani </ from >
-< heading > Reminder </ heading >
-< body > Don't forget me this weekend!</body>
-   </ note > ";
-            StringBuilder soapRequest = new StringBuilder();
-            soapRequest.AppendLine(@"<?xml version=""1.0"" encoding=""UTF-8""?>");
-       //     soapRequest.AppendLine(@"<root>");
-            soapRequest.AppendLine(@"<SOAP-ENV:Envelope xmlns:SOAP-ENV = ""http://schemas.xmlsoap.org/soap/envelope/""");
-
-            soapRequest.AppendLine(@"xmlns:xsd=""http://www.w3.org/2001/XMLSchema""");
-            soapRequest.AppendLine(@"xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance""");
-            soapRequest.AppendLine(@"xmlns:SOAP-ENC=""http://schemas.xmlsoap.org/soap/encoding/""");
-            soapRequest.AppendLine(@"SOAP-ENV:encodingStyle=""http://schemas.xmlsoap.org/soap/encoding/""");
-            soapRequest.AppendLine(@"xmlns:ns4=""https://efaktura.bg/soap/"">");
-            soapRequest.AppendLine(@"<SOAP-ENV:Body>");
-            soapRequest.AppendLine(@"<ns4:uploadFile>");
-            soapRequest.AppendLine(@"<ns4:authorizationId>QzYxNTgyLUI3M0s0N0VKNTQ=</ns4:authorizationId>");
-            soapRequest.AppendLine(@"<ns4:authorizationKey>VFdUWEJQLUhORVo5Si03NEVWOFotUU01SjlU</ns4:authorizationKey>");
-            soapRequest.AppendLine($@"<ns4:fileName>{fileName}</ns4:fileName>");
-            soapRequest.AppendLine(@"<fileCont href=""cid: e2315277bec2dfea98e1ca49f8d310b1""/></ns4:uploadFile>");
-            soapRequest.AppendLine(@"</SOAP-ENV:Body>");
-            soapRequest.AppendLine(@"</SOAP-ENV:Envelope>");
-        //    soapRequest.AppendLine(@"</root>");
-            Console.WriteLine(soapRequest);
+            var filecontName = "cid:e2315277bec2dfea98e1ca49f8d310b1";
             XmlDocument doc = new XmlDocument();
-
-            doc.LoadXml(soapRequest.ToString());
-            return soapRequest.ToString();
+            XmlDocument soapEnvelopeDocument = new XmlDocument();
+            soapEnvelopeDocument.LoadXml($@"<SOAP-ENV:Envelope xmlns:SOAP-ENV=""http://schemas.xmlsoap.org/soap/envelope/"" xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"" xmlns:SOAP-ENC=""http://schemas.xmlsoap.org/soap/encoding/"" SOAP-ENV:encodingStyle=""http://schemas.xmlsoap.org/soap/encoding/"" xmlns:ns4=""https://efaktura.bg/soap/""><SOAP-ENV:Body><ns4:uploadFile><ns4:authorizationId>QzYxNTgyLUI3M0s0N0VKNTQ=</ns4:authorizationId><ns4:authorizationKey>VFdUWEJQLUhORVo5Si03NEVWOFotUU01SjlU</ns4:authorizationKey><ns4:fileName>{fileName}</ns4:fileName><fileCont href=""{filecontName}""/></ns4:uploadFile></SOAP-ENV:Body></SOAP-ENV:Envelope>");
+        //            doc.LoadXml(soapRequest.ToString());
+            return null;
         }
 
         //Generate xml based on the C# object from the database
