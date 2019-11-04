@@ -39,7 +39,6 @@ namespace XMLPractice
             XmlDocument soapEnvelopeXml = CreateSoapEnvelope(attachmentName);
             HttpWebRequest webRequest = CreateWebRequest(url, action, attachmentName);
             InsertSoapEnvelopeIntoWebRequest(soapEnvelopeXml, webRequest);
-            Console.WriteLine(webRequest.);
             // begin async call to web request.
 
             using (WebResponse response = webRequest.GetResponse())
@@ -63,12 +62,12 @@ namespace XMLPractice
             webRequest.ContentType = "multipart/related; boundary=-------------------------- - 7da24f2e50046; type = text/xml";
             webRequest.Date = DateTime.UtcNow;
             webRequest.Accept = "text/xml";
-       //     webRequest.Headers.Add($"SOAPAction: {url} + uploadFileRequest");
+            webRequest.Headers.Add(@"SOAPAction", url);
             webRequest.Headers.Add("Content-Disposition: attachment");
             //encoded file content
             var fileCont = "cid:" + EncodeZipContentToBase64(attachmentName);
             webRequest.Headers.Add($"Content-ID:{fileCont}");
-
+            
             return webRequest;
         }
 
@@ -79,7 +78,7 @@ namespace XMLPractice
             var authorizationIdEncoded = EncodeStringToBase64("C61582-B73K47EJ54");
             var authorizationKeyEncoded = EncodeStringToBase64("TWTXBP-HNEZ9J-74EV8Z-QM5J9T");
             XmlDocument soapEnvelopeDocument = new XmlDocument();
-            soapEnvelopeDocument.LoadXml($@"<SOAP-ENV:Envelope xmlns:SOAP-ENV=""http://schemas.xmlsoap.org/soap/envelope/"" xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"" xmlns:SOAP-ENC=""http://schemas.xmlsoap.org/soap/encoding/"" SOAP-ENV:encodingStyle=""http://schemas.xmlsoap.org/soap/encoding/"" xmlns:ns4=""https://efaktura.bg/soap/""><SOAP-ENV:Body><ns4:uploadFile><ns4:authorizationId>{authorizationIdEncoded}</ns4:authorizationId><ns4:authorizationKey>{authorizationKeyEncoded}</ns4:authorizationKey><ns4:fileName>{fileNameEncoded}</ns4:fileName></ns4:uploadFile></SOAP-ENV:Body></SOAP-ENV:Envelope>");
+            soapEnvelopeDocument.LoadXml($@"<?xml version=""1.0"" encoding=""UTF-8""?><SOAP-ENV:Envelope xmlns:SOAP-ENV=""http://schemas.xmlsoap.org/soap/envelope/"" xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"" xmlns:SOAP-ENC=""http://schemas.xmlsoap.org/soap/encoding/"" SOAP-ENV:encodingStyle=""http://schemas.xmlsoap.org/soap/encoding/"" xmlns:ns4=""https://efaktura.bg/soap/""><SOAP-ENV:Body><ns4:uploadFile><ns4:authorizationId>{authorizationIdEncoded}</ns4:authorizationId><ns4:authorizationKey>{authorizationKeyEncoded}</ns4:authorizationKey><ns4:fileName>{fileNameEncoded}</ns4:fileName></ns4:uploadFile></SOAP-ENV:Body></SOAP-ENV:Envelope>");
         //            doc.LoadXml(soapRequest.ToString());
             return soapEnvelopeDocument;
         }
