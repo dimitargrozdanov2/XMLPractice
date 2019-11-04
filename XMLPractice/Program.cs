@@ -20,7 +20,7 @@ namespace XMLPractice
             string outputPath;
 
                 string methodName = "uploadFile";
-                var result = MakeWebServiceCall(methodName, "test");
+                MakeWebServiceCall(methodName, "C:\\Users\\GR-002\\Desktop\\efakturafile\\BG130441375_9800000000_20121122_signed.xml");
 
             if (success)
             {
@@ -29,54 +29,84 @@ namespace XMLPractice
 
         }
 
-        private static string MakeWebServiceCall(string methodName, string requestXmlString)
+        private static void MakeWebServiceCall(string methodName, string attachmentName)
         {
-            WebRequest webRequest = WebRequest.Create("https://demo.efaktura.bg/soap/billerFiles.php");
 
-            HttpWebRequest httpRequest = (HttpWebRequest)webRequest;
-            httpRequest.Method = "POST";
-            //this is to include mime types(attachments)
-            httpRequest.ContentType = "multipart/related";
-            
-            //methodName should be uploadFile
-        //    httpRequest.Headers.Add()
-            httpRequest.Headers.Add("SOAPAction: https://demo.efaktura.bg/soap/billerFiles.php" + methodName);
-            Stream requestStream = httpRequest.GetRequestStream();
+            var url = "https://demo.efaktura.bg/soap/billerFiles.php";
+            var action = "uploadFile";
 
-            //Create Stream and Complete Request
-            StreamWriter streamWriter = new StreamWriter(requestStream);
-            streamWriter.Write(GetSoapString(requestXmlString));
-            streamWriter.Close();
+            //Create Soap Envelope
+            XmlDocument soapEnvelopeXml = CreateSoapEnvelope(attachmentName);
+            HttpWebRequest webRequest = CreateWebRequest(url, action, attachmentName);
+            InsertSoapEnvelopeIntoWebRequest(soapEnvelopeXml, webRequest);
+            Console.WriteLine(webRequest.);
+            // begin async call to web request.
 
-            //Get response
-            WebResponse webResponse = httpRequest.GetResponse();
-            Stream responseStream = webResponse.GetResponseStream();
-            StreamReader streamReader = new StreamReader(responseStream);
-            string resulXmlFromWebService = streamReader.ReadToEnd();
-            //Console.WriteLine(resulXmlFromWebService);
-            //return resulXmlFromWebService;
+            using (WebResponse response = webRequest.GetResponse())
+            {
+                using (StreamReader rd = new StreamReader(response.GetResponseStream()))
+                {
+                    string soapResult = rd.ReadToEnd();
+                    Console.WriteLine(soapResult);
+                }
+            }
 
-            ////Read the response into an xml document - that breaks if the document does not work
-            System.Xml.XmlDocument soapResonseXMLDocument = new System.Xml.XmlDocument();
 
-            soapResonseXMLDocument.LoadXml(streamReader.ReadToEnd());
-
-            //return only the xml representing the response details (inner request)
-            return soapResonseXMLDocument.GetElementsByTagName(methodName + "Result")[0].InnerXml;
         }
 
+        private static HttpWebRequest CreateWebRequest(string url, string action, string attachmentName)
+        {
+            HttpWebRequest webRequest = (HttpWebRequest)WebRequest.Create(url);
 
-        private static string GetSoapString(string requestXmlString)
+            webRequest.Method = "POST";
+            //this is to include mime types(attachments)
+            webRequest.ContentType = "multipart/related; boundary=-------------------------- - 7da24f2e50046; type = text/xml";
+            webRequest.Date = DateTime.UtcNow;
+            webRequest.Accept = "text/xml";
+       //     webRequest.Headers.Add($"SOAPAction: {url} + uploadFileRequest");
+            webRequest.Headers.Add("Content-Disposition: attachment");
+            //encoded file content
+            var fileCont = "cid:" + EncodeZipContentToBase64(attachmentName);
+            webRequest.Headers.Add($"Content-ID:{fileCont}");
+
+            return webRequest;
+        }
+
+        private static XmlDocument CreateSoapEnvelope(string attachmentName)
         {
             //Convert name to base64
-            var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(requestXmlString);
-            var fileName = System.Convert.ToBase64String(plainTextBytes);
-            var filecontName = "cid:e2315277bec2dfea98e1ca49f8d310b1";
-            XmlDocument doc = new XmlDocument();
+            var fileNameEncoded = EncodeStringToBase64(attachmentName);
+            var authorizationIdEncoded = EncodeStringToBase64("C61582-B73K47EJ54");
+            var authorizationKeyEncoded = EncodeStringToBase64("TWTXBP-HNEZ9J-74EV8Z-QM5J9T");
             XmlDocument soapEnvelopeDocument = new XmlDocument();
-            soapEnvelopeDocument.LoadXml($@"<SOAP-ENV:Envelope xmlns:SOAP-ENV=""http://schemas.xmlsoap.org/soap/envelope/"" xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"" xmlns:SOAP-ENC=""http://schemas.xmlsoap.org/soap/encoding/"" SOAP-ENV:encodingStyle=""http://schemas.xmlsoap.org/soap/encoding/"" xmlns:ns4=""https://efaktura.bg/soap/""><SOAP-ENV:Body><ns4:uploadFile><ns4:authorizationId>QzYxNTgyLUI3M0s0N0VKNTQ=</ns4:authorizationId><ns4:authorizationKey>VFdUWEJQLUhORVo5Si03NEVWOFotUU01SjlU</ns4:authorizationKey><ns4:fileName>{fileName}</ns4:fileName><fileCont href=""{filecontName}""/></ns4:uploadFile></SOAP-ENV:Body></SOAP-ENV:Envelope>");
+            soapEnvelopeDocument.LoadXml($@"<SOAP-ENV:Envelope xmlns:SOAP-ENV=""http://schemas.xmlsoap.org/soap/envelope/"" xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"" xmlns:SOAP-ENC=""http://schemas.xmlsoap.org/soap/encoding/"" SOAP-ENV:encodingStyle=""http://schemas.xmlsoap.org/soap/encoding/"" xmlns:ns4=""https://efaktura.bg/soap/""><SOAP-ENV:Body><ns4:uploadFile><ns4:authorizationId>{authorizationIdEncoded}</ns4:authorizationId><ns4:authorizationKey>{authorizationKeyEncoded}</ns4:authorizationKey><ns4:fileName>{fileNameEncoded}</ns4:fileName></ns4:uploadFile></SOAP-ENV:Body></SOAP-ENV:Envelope>");
         //            doc.LoadXml(soapRequest.ToString());
-            return null;
+            return soapEnvelopeDocument;
+        }
+
+        private static void InsertSoapEnvelopeIntoWebRequest(XmlDocument soapEnvelopeXml, HttpWebRequest webRequest)
+        {
+            using (Stream stream = webRequest.GetRequestStream())
+            {
+                soapEnvelopeXml.Save(stream);
+            }
+        }
+
+        public static string EncodeStringToBase64(string plainTextBytes)
+        {
+            var plainText = System.Text.Encoding.UTF8.GetBytes(plainTextBytes);
+
+            return System.Convert.ToBase64String(plainText);
+        }
+
+        public static string EncodeZipContentToBase64(string attachmentName)
+        {
+            using (FileStream fs = new FileStream(attachmentName, FileMode.Open, FileAccess.Read))
+            {
+                byte[] filebytes = new byte[fs.Length];
+                fs.Read(filebytes, 0, Convert.ToInt32(fs.Length));
+                return Convert.ToBase64String(filebytes);
+            }
         }
 
         //Generate xml based on the C# object from the database
