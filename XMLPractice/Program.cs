@@ -19,13 +19,14 @@ namespace XMLPractice
             bool success = LoadXmlFiles(inputXMLsDirectory);
             string outputPath;
 
-                string methodName = "uploadFile";
-                MakeWebServiceCall(methodName, "C:\\Users\\GR-002\\Desktop\\efakturafile\\BG130441375_9800000000_20121122_signed.xml");
+            string methodName = "uploadFile";
+            MakeWebServiceCall(methodName, "C:\\Users\\GR-002\\Desktop\\efakturafile\\BG130441375_9800000000_20121122_signed.xml");
 
             if (success)
             {
                 outputPath = ZipFiles(inputXMLsDirectory);
             }
+
 
         }
 
@@ -41,7 +42,7 @@ namespace XMLPractice
             InsertSoapEnvelopeIntoWebRequest(soapEnvelopeXml, webRequest);
             // begin async call to web request.
 
-            using (WebResponse response = webRequest.GetResponse())
+            using (HttpWebResponse response = (HttpWebResponse)webRequest.GetResponse())
             {
                 using (StreamReader rd = new StreamReader(response.GetResponseStream()))
                 {
@@ -59,15 +60,16 @@ namespace XMLPractice
 
             webRequest.Method = "POST";
             //this is to include mime types(attachments)
-            webRequest.ContentType = "multipart/related; boundary=-------------------------- - 7da24f2e50046; type = text/xml";
+            webRequest.ContentType = "multipart/related;type=text/xml; boundary=---------------------------7da24f2e50046";
             webRequest.Date = DateTime.UtcNow;
             webRequest.Accept = "text/xml";
-            webRequest.Headers.Add(@"SOAPAction", url);
+            webRequest.Headers.Add(@"SOAPAction", action);
             webRequest.Headers.Add("Content-Disposition: attachment");
+            webRequest.Headers.Add("Content-Transfer-Encoding: base64");
             //encoded file content
             var fileCont = "cid:" + EncodeZipContentToBase64(attachmentName);
             webRequest.Headers.Add($"Content-ID:{fileCont}");
-            
+
             return webRequest;
         }
 
@@ -79,7 +81,7 @@ namespace XMLPractice
             var authorizationKeyEncoded = EncodeStringToBase64("TWTXBP-HNEZ9J-74EV8Z-QM5J9T");
             XmlDocument soapEnvelopeDocument = new XmlDocument();
             soapEnvelopeDocument.LoadXml($@"<?xml version=""1.0"" encoding=""UTF-8""?><SOAP-ENV:Envelope xmlns:SOAP-ENV=""http://schemas.xmlsoap.org/soap/envelope/"" xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"" xmlns:SOAP-ENC=""http://schemas.xmlsoap.org/soap/encoding/"" SOAP-ENV:encodingStyle=""http://schemas.xmlsoap.org/soap/encoding/"" xmlns:ns4=""https://efaktura.bg/soap/""><SOAP-ENV:Body><ns4:uploadFile><ns4:authorizationId>{authorizationIdEncoded}</ns4:authorizationId><ns4:authorizationKey>{authorizationKeyEncoded}</ns4:authorizationKey><ns4:fileName>{fileNameEncoded}</ns4:fileName></ns4:uploadFile></SOAP-ENV:Body></SOAP-ENV:Envelope>");
-        //            doc.LoadXml(soapRequest.ToString());
+            //            doc.LoadXml(soapRequest.ToString());
             return soapEnvelopeDocument;
         }
 
@@ -87,14 +89,22 @@ namespace XMLPractice
         {
             using (Stream stream = webRequest.GetRequestStream())
             {
-                soapEnvelopeXml.Save(stream);
+                StringWriter sw = new StringWriter();
+                XmlTextWriter tx = new XmlTextWriter(sw);
+                soapEnvelopeXml.WriteTo(tx);
+
+                string str = sw.ToString();
+
+                Console.WriteLine(soapEnvelopeXml.ToString());
+                ASCIIEncoding Encode = new ASCIIEncoding();
+                var arr = Encode.GetBytes(EncodeStringToBase64(str));
+                stream.Write(arr, 0, arr.Length);
             }
         }
 
         public static string EncodeStringToBase64(string plainTextBytes)
         {
             var plainText = System.Text.Encoding.UTF8.GetBytes(plainTextBytes);
-
             return System.Convert.ToBase64String(plainText);
         }
 
@@ -244,7 +254,7 @@ namespace XMLPractice
                 {
                     ZipFile.CreateFromDirectory(signedDocsFolder, extractPath);
                 }
-                catch (IOException e)
+                catch (IOException)
                 {
                     Console.WriteLine("Zip file has already been created. Please delete file if you want to make a new one.");
                 }
@@ -253,7 +263,7 @@ namespace XMLPractice
             else
             {
                 return signedDocsFolder;
-            }         
+            }
         }
     }
 }

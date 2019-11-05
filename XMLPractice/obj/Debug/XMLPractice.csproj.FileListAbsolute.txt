@@ -1,6 +1,6 @@
 C:\Users\GR-002\source\repos\XMLPractice\XMLPractice\bin\Debug\XMLPractice.exe.config
 C:\Users\GR-002\source\repos\XMLPractice\XMLPractice\bin\Debug\XMLPractice.exe
 C:\Users\GR-002\source\repos\XMLPractice\XMLPractice\bin\Debug\XMLPractice.pdb
-C:\Users\GR-002\source\repos\XMLPractice\XMLPractice\obj\Debug\XMLPractice.csprojAssemblyReference.cache
 C:\Users\GR-002\source\repos\XMLPractice\XMLPractice\obj\Debug\XMLPractice.exe
 C:\Users\GR-002\source\repos\XMLPractice\XMLPractice\obj\Debug\XMLPractice.pdb
+C:\Users\GR-002\source\repos\XMLPractice\XMLPractice\obj\Debug\XMLPractice.csprojAssemblyReference.cache
